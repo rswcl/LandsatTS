@@ -220,16 +220,14 @@ lsat_fit_phenological_curves = function(dt,
     spline.fits.dt <- spline.fits.dt[, spl.fit.max.doy := doy[which.max(spl.fit)], by = 'sample.id'] # calculate typical day of peak greenness
     spline.fits.dt <- spline.fits.dt[, spl.frac.max := spl.fit / spl.fit.max]
     spline.fits.dt <- spline.fits.dt[, si.adjustment := spl.fit.max - spl.fit] # compute adjustment factor
-    spline.fits.dt <- spline.fits.dt[, focal.yr := focal.yr]
-    spline.fits.dt <- spline.fits.dt[, c('min.doy','max.doy'):= NULL]
 
-    spline.fits.dt <- spline.fits.dt[, spl.fit.mean := mean(spl.fit), by = 'sample.id'] # compute max si typically observed at a site
-    spline.fits.dt <- spline.fits.dt[, spl.fit.mean.doy := doy[which.mean(spl.fit)], by = 'sample.id'] # calculate typical day of mean greenness
+    spline.fits.dt <- spline.fits.dt[, spl.fit.mean := mean(spl.fit), by = 'sample.id'] 
+    spline.fits.dt <- spline.fits.dt[, spl.fit.mean.doy := doy[which.min(abs(spl.fit - spl.fit.mean))], by = 'sample.id'] 
     spline.fits.dt <- spline.fits.dt[, spl.frac.mean := spl.fit / spl.fit.mean]
-    spline.fits.dt <- spline.fits.dt[, si.adjustment2 := spl.fit.mean - spl.fit] # compute adjustment factor
+    spline.fits.dt <- spline.fits.dt[, si.adjustment2 := spl.fit.mean - spl.fit]
     spline.fits.dt <- spline.fits.dt[, focal.yr := focal.yr]
-    spline.fits.dt <- spline.fits.dt[, c('min.doy','mean.doy'):= NULL]
-    
+    spline.fits.dt <- spline.fits.dt[, c('min.doy','max.doy','mean.doy'):= NULL]
+
     splines.list[[i]] <- spline.fits.dt
     
     # ADD PHENOLOGY METRICS TO FOCAL DATA
